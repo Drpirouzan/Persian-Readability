@@ -22,12 +22,12 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 ## Usage
 
 - Run with direct text:
-\python persian_readability.py -t "امروز هوا خوب است و من به دانشگاه رفتم."
+`python persian_readability.py -t "متن فارسی شما"`
 
 - Run with a file:
-\python persian_readability.py -f sample.txt
+`python persian_readability.py -f sample.txt`
 
 - Just print the raw score:
-\python persian_readability.py -f sample.txt --plain
+`python persian_readability.py -f sample.txt`
 
 - Higher scores ≈ easier text (for Persian calibration).
