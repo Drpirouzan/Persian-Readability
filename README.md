@@ -18,3 +18,16 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 
 - Python 3.9 or newer
 - [`hazm`](https://github.com/sobhe/hazm) for Persian text normalization and tokenization (install with: `pip install hazm`)
+
+## Usage
+
+- Run with direct text:
+python persian_readability.py -t "امروز هوا خوب است و من به دانشگاه رفتم."
+
+- Run with a file:
+python persian_readability.py -f sample.txt
+
+- Just print the raw score:
+python persian_readability.py -f sample.txt --plain
+
+- Higher scores ≈ easier text (for Persian calibration).
