@@ -18,20 +18,3 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 
 ```bash
 pip install hazm
-Usage
-Run with direct text:
-
-bash
-Copy code
-python persian_readability.py -t "امروز هوا خوب است و من به دانشگاه رفتم."
-Run with a file:
-
-bash
-Copy code
-python persian_readability.py -f sample.txt
-Just print the raw score:
-
-bash
-Copy code
-python persian_readability.py -f sample.txt --plain
-Higher scores ≈ easier text (for Persian calibration).
