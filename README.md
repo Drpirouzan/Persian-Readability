@@ -17,7 +17,4 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 ## Requirements
 
 - Python 3.9 or newer
-- [`hazm`](https://github.com/sobhe/hazm) for Persian text normalization and tokenization
-
-```bash
-pip install hazm```
+- [`hazm`](https://github.com/sobhe/hazm) for Persian text normalization and tokenization (install with: `pip install hazm`)
