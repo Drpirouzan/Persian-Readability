@@ -20,5 +20,4 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 - [`hazm`](https://github.com/sobhe/hazm) for Persian text normalization and tokenization
 
 ```bash
-pip install hazm
-```
+pip install hazm```
