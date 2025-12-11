@@ -12,7 +12,8 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
   - Number of letters
   - ASL (Average Sentence Length = words per sentence)
   - WL (Average Word Length = letters per word)
-  - Flesch–Dayani readability score
+  - Flesch–Dayani readability score (Dayani-calibrated for Persian)
+Based on Dayani (2000) Persian adaptation of the Flesch Reading Ease formula.
 
 ## Requirements
 
@@ -31,3 +32,13 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 `python persian_readability.py -f sample.txt`
 
 - Higher scores ≈ easier text (for Persian calibration).
+
+## References
+
+- Dayani (2000) – Persian adaptation of the Flesch Reading Ease.
+
+- Mohammadi & Khasteh (2020) – A Machine Learning Approach to Persian Text Readability.
+
+## Author
+
+- Dr. Mohammad Pirouzan (GitHub: @Drpirouzan)
