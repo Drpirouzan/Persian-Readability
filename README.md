@@ -5,13 +5,13 @@ This repository provides a simple Python script to calculate the **Flesch–Daya
 ## Features
 
 - Uses `hazm` for Persian normalization and tokenization.
-- Approximates syllable counts for Persian words.
+- Computes basic length-based features for Persian text.
 - Computes:
   - Number of sentences
   - Number of words
-  - Approximate number of syllables
-  - ASL (Average Sentence Length)
-  - ASW (Average Syllables per Word)
+  - Number of letters
+  - ASL (Average Sentence Length = words per sentence)
+  - WL (Average Word Length = letters per word)
   - Flesch–Dayani readability score
 
 ## Requirements
