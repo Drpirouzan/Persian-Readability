@@ -44,7 +44,7 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
 
 ### Required
 
-- Python **3.7** or newer
+- Python **3.10** or newer
 - [`hazm`](https://github.com/roshan-research/hazm) — Persian NLP library
 
 ```
