@@ -1,6 +1,6 @@
 # Persian Readability (Flesch–Dayani)
 
-A lightweight Python script to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text — with an optional POS-enhanced syllable counter for higher accuracy.
+A lightweight Python script to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text, with an optional POS-enhanced syllable counter for higher accuracy.
 
 ---
 
