@@ -9,8 +9,8 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
 - Persian text normalization and tokenization via `hazm`
 - **Punctuation-aware tokenization** — علائم نشانه‌گذاری از شمارش کلمات و هجاها حذف می‌شوند
 - **Two-tier syllable counting:**
-  - **POS-enhanced** (~85% accuracy) — if `parsivar` is installed, uses part-of-speech tags to correctly count syllables in verbs with attached prefixes (`میرود`، `نمی‌دانم`) and comparative adjectives (`بهتر`، `بزرگ‌ترین`)
-  - **Morphological heuristic** (~75% accuracy) — used automatically if `parsivar` is not installed
+  - **POS-enhanced** (Better Accuracy) — if `parsivar` is installed, uses part-of-speech tags to correctly count syllables in verbs with attached prefixes (`میرود`، `نمی‌دانم`) and comparative adjectives (`بهتر`، `بزرگ‌ترین`)
+  - **Morphological heuristic** (Good Accuracy) — used automatically if `parsivar` is not installed
 - **Context-aware خواه classifier** — three-layer disambiguation prevents confusing `خواهش`, `خواهر`, `آزادی‌خواه`, and `خواه ... خواه ...` with the future auxiliary (`خواهم رفت`)
 - Computes:
   - Number of sentences, words, letters, and syllables
