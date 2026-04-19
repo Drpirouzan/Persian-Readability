@@ -8,7 +8,7 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
 
 - Persian text normalization and tokenization via `hazm`
 - **Two-tier syllable counting:**
-  - **POS-enhanced** (~85% accuracy) — if `parsivar` is installed, uses part-of-speech tags to correctly count syllables in verbs with attached prefixes (`می‌رود`, `نمیدانم`), comparative adjectives (`بهتر`, `بزرگ‌ترین`), and mixed Persian/Latin text
+  - **POS-enhanced** (~85% accuracy) — if `parsivar` is installed, uses part-of-speech tags to correctly count syllables in verbs with attached prefixes (`می‌رود`, `نمیدانم`, `بگو`, `خواهم رفت`), comparative adjectives (`بهتر`, `بزرگ‌ترین`), and mixed Persian/Latin text
   - **Morphological heuristic** (~75% accuracy) — used automatically if `parsivar` is not installed; no extra dependency required
 - Computes:
   - Number of sentences, words, letters, and syllables
@@ -19,7 +19,9 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
   - **Human-readable level** (e.g. *متوسط — مناسب دانش‌آموزان دبیرستان*)
 - Accepts input from a file, a command-line argument, or **stdin** (pipe-friendly)
 - `--plain` flag for scripting and pipeline use
+- `--verbose` flag for debug logging
 - The output indicates which syllable mode was active
+- Warns when the text is too short for a reliable score (< 50 words)
 
 ---
 
@@ -27,30 +29,32 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
 
 | Score | Level |
 |-------|-------|
-| ≥ 90 | بسیار آسان — مناسب کودکان دبستانی |
-| ≥ 80 | آسان — مناسب نوجوانان |
-| ≥ 70 | نسبتاً آسان — مناسب عموم مردم |
-| ≥ 60 | متوسط — مناسب دانش‌آموزان دبیرستان |
-| ≥ 50 | نسبتاً دشوار — مناسب دانشجویان |
-| ≥ 30 | دشوار — مناسب متخصصان |
-| < 30 | بسیار دشوار — متون علمی/تخصصی |
+| ≥ 90  | بسیار آسان — مناسب کودکان دبستانی |
+| ≥ 80  | آسان — مناسب نوجوانان |
+| ≥ 70  | نسبتاً آسان — مناسب عموم مردم |
+| ≥ 60  | متوسط — مناسب دانش‌آموزان دبیرستان |
+| ≥ 50  | نسبتاً دشوار — مناسب دانشجویان |
+| ≥ 30  | دشوار — مناسب متخصصان |
+| < 30  | بسیار دشوار — متون علمی/تخصصی |
 
 ---
 
 ## Requirements
 
 ### Required
+
 - Python **3.7** or newer
 - [`hazm`](https://github.com/roshan-research/hazm) — Persian NLP library
 
-```bash
+```
 pip install hazm
 ```
 
 ### Optional (for higher syllable accuracy)
+
 - [`parsivar`](https://github.com/ICTRC/Parsivar) — Persian preprocessing toolkit with POS tagger
 
-```bash
+```
 pip install parsivar
 ```
 
@@ -61,24 +65,34 @@ pip install parsivar
 ## Usage
 
 **Direct text:**
-```bash
+
+```
 python persian_readability.py -t "متن فارسی شما"
 ```
 
 **From a file:**
-```bash
+
+```
 python persian_readability.py -f sample.txt
 ```
 
 **From stdin (pipe):**
-```bash
+
+```
 echo "متن فارسی شما" | python persian_readability.py
 cat article.txt | python persian_readability.py
 ```
 
 **Raw score only (for scripting):**
-```bash
+
+```
 python persian_readability.py -f sample.txt --plain
+```
+
+**Debug logging:**
+
+```
+python persian_readability.py -f sample.txt --verbose
 ```
 
 ---
@@ -86,13 +100,14 @@ python persian_readability.py -f sample.txt --plain
 ## Sample Output
 
 ```
-════════════════════════════════════════════════════
+══════════════════════════════════════════════════════
   Persian Readability — Flesch–Dayani
-════════════════════════════════════════════════════
+══════════════════════════════════════════════════════
   جملات   : 5
   کلمات   : 87
   حروف    : 412
-  هجاها   : 201  [POS-enhanced (Parsivar)]
+  هجاها   : 201
+  روش     : POS-enhanced — Parsivar
 ────────────────────────────────────────────────────
   ASL  (کلمه/جمله)  : 17.40
   WL   (حرف/کلمه)   : 4.74
@@ -100,7 +115,7 @@ python persian_readability.py -f sample.txt --plain
 ────────────────────────────────────────────────────
   امتیاز Flesch–Dayani : 58.34
   سطح خوانایی         : متوسط — مناسب دانش‌آموزان دبیرستان
-════════════════════════════════════════════════════
+══════════════════════════════════════════════════════
 ```
 
 ---
@@ -129,9 +144,20 @@ Higher scores indicate easier text.
 | Morphological heuristic | ~75% | Counts long vowels (ا و ی), diacritics, and word-final ه; no POS context |
 
 The main cases where POS tagging improves accuracy:
-- Verbs with attached prefixes: `میرود` (written without half-space) → correctly +1 syllable
+
+- Verbs with attached prefixes (no half-space): `میرود` → +1 syllable
+- Imperative verbs: `بگو`، `بنویس` → correctly +1 syllable for `بـ` prefix
+- Future tense: `خواهم رفت` → `خواه` prefix counted separately
 - Comparative/superlative adjectives: `بهترین` → suffix `ترین` counted as 2 syllables
 - Mixed Persian/Latin tokens: routed to an English vowel-group counter
+
+---
+
+## Notes
+
+- **Minimum text length:** The Flesch–Dayani formula is designed for running prose. For texts shorter than ~50 words, the score may be unstable. The script will emit a warning in this case (use `--verbose` to see it).
+- **stdin interaction:** When running without `-t` or `-f` and stdin is a terminal, the script will wait for input and print a prompt. Press `Ctrl+D` to signal end of input.
+- **Log messages:** Warnings and debug output go to stderr and do not affect `--plain` mode.
 
 ---
 
