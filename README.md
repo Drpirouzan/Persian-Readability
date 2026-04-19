@@ -1,15 +1,17 @@
 # Persian Readability (Flesch–Dayani)
 
-A lightweight Python script to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text, with an optional POS-enhanced syllable counter for higher accuracy.
+A lightweight Python script to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text — with an optional POS-enhanced syllable counter for higher accuracy.
 
 ---
 
 ## Features
 
 - Persian text normalization and tokenization via `hazm`
+- **Punctuation-aware tokenization** — علائم نشانه‌گذاری از شمارش کلمات و هجاها حذف می‌شوند
 - **Two-tier syllable counting:**
-  - **POS-enhanced** (~85% accuracy) — if `parsivar` is installed, uses part-of-speech tags to correctly count syllables in verbs with attached prefixes (`می‌رود`, `نمیدانم`, `بگو`, `خواهم رفت`), comparative adjectives (`بهتر`, `بزرگ‌ترین`), and mixed Persian/Latin text
-  - **Morphological heuristic** (~75% accuracy) — used automatically if `parsivar` is not installed; no extra dependency required
+  - **POS-enhanced** (~85% accuracy) — if `parsivar` is installed, uses part-of-speech tags to correctly count syllables in verbs with attached prefixes (`میرود`، `نمی‌دانم`) and comparative adjectives (`بهتر`، `بزرگ‌ترین`)
+  - **Morphological heuristic** (~75% accuracy) — used automatically if `parsivar` is not installed
+- **Context-aware خواه classifier** — three-layer disambiguation prevents confusing `خواهش`, `خواهر`, `آزادی‌خواه`, and `خواه ... خواه ...` with the future auxiliary (`خواهم رفت`)
 - Computes:
   - Number of sentences, words, letters, and syllables
   - **ASL** — Average Sentence Length (words per sentence)
@@ -20,8 +22,7 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
 - Accepts input from a file, a command-line argument, or **stdin** (pipe-friendly)
 - `--plain` flag for scripting and pipeline use
 - `--verbose` flag for debug logging
-- The output indicates which syllable mode was active
-- Warns when the text is too short for a reliable score (< 50 words)
+- Warns when text is too short for a reliable score (< 50 words)
 
 ---
 
@@ -89,7 +90,7 @@ cat article.txt | python persian_readability.py
 python persian_readability.py -f sample.txt --plain
 ```
 
-**Debug logging:**
+**With debug logging:**
 
 ```
 python persian_readability.py -f sample.txt --verbose
@@ -129,35 +130,55 @@ FDR = 262.835 − 0.846 × ASYL − 1.015 × ASL
 Where **ASYL** = average syllables per word and **ASL** = average words per sentence.
 Higher scores indicate easier text.
 
-> **Syllable counting note:** The original Dayani (1374/1995) formula requires syllables per word (ASYL).
-> This implementation uses POS-aware syllable counting when `parsivar` is available, falling back to a
-> morphological heuristic otherwise. Neither approach is a trained ML model — both are deterministic and
-> fast, with no GPU or large model download required.
-
 ---
 
 ## How Syllable Accuracy Tiers Work
 
 | Mode | Accuracy | How |
 |------|----------|-----|
-| POS-enhanced | ~85% | Parsivar POSTagger (wapiti CRF model, trained on Bijankhan corpus) detects verb/adjective tags; prefix/suffix rules applied per POS |
-| Morphological heuristic | ~75% | Counts long vowels (ا و ی), diacritics, and word-final ه; no POS context |
+| POS-enhanced | ~85% | Parsivar POSTagger (wapiti CRF, Bijankhan corpus) detects verb/adjective tags; prefix/suffix rules applied per POS |
+| Morphological heuristic | ~75% | Counts written long vowels (ا و ی), diacritics, and word-final ه; no POS context |
 
-The main cases where POS tagging improves accuracy:
+Main cases where POS tagging improves accuracy:
 
-- Verbs with attached prefixes (no half-space): `میرود` → +1 syllable
-- Imperative verbs: `بگو`، `بنویس` → correctly +1 syllable for `بـ` prefix
-- Future tense: `خواهم رفت` → `خواه` prefix counted separately
-- Comparative/superlative adjectives: `بهترین` → suffix `ترین` counted as 2 syllables
-- Mixed Persian/Latin tokens: routed to an English vowel-group counter
+- Verbs with attached `می`/`نمی` prefix (no half-space): `میرود` → +1 syllable
+- Comparative/superlative adjectives: `بهترین` → suffix `ترین` = 2 syllables
+
+### خواه Classifier
+
+The word `خواه` has multiple roles in Persian. A three-layer classifier resolves ambiguity **before** syllable counting:
+
+| Label | Examples | Treatment |
+|-------|---------|-----------|
+| `FUTURE_AUX` | خواهم رفت، نخواهند پذیرفت | syllable count unchanged (هجاشماری base درست است) |
+| `LEXICAL_KHASTAN` | خواهد که برود، این را خواهد | tag اصلی حفظ می‌شود |
+| `PARTICLE_KHAH` | خواه بیاید خواه نیاید | treated as non-verb |
+| `NOMINAL_DERIVATIVE` | خواهش، خواهان، خواهنده | treated as non-verb |
+| `INDEPENDENT_WORD` | خواهر، خواهران | treated as non-verb |
+| `SUFFIX_COMPOUND` | آزادی‌خواه، خیرخواه، دادخواه | treated as non-verb |
+
+The classifier uses exact lexical sets (layer 1), suffix-compound detection (layer 2), and a 2-token context window (layer 3) — never a simple prefix regex.
 
 ---
 
 ## Notes
 
-- **Minimum text length:** The Flesch–Dayani formula is designed for running prose. For texts shorter than ~50 words, the score may be unstable. The script will emit a warning in this case (use `--verbose` to see it).
-- **stdin interaction:** When running without `-t` or `-f` and stdin is a terminal, the script will wait for input and print a prompt. Press `Ctrl+D` to signal end of input.
-- **Log messages:** Warnings and debug output go to stderr and do not affect `--plain` mode.
+- **Minimum text length:** The Flesch–Dayani formula is designed for running prose. Texts shorter than ~50 words produce unstable scores. A warning is emitted in this case (visible with `--verbose`).
+- **Punctuation filtering:** علائم نشانه‌گذاری فارسی و لاتین (گیومه، نقطه، ویرگول، ...) از لبه‌های هر توکن پاک می‌شوند و توکن‌های تمام‌علامت از شمارش حذف می‌شوند.
+- **stdin:** When running interactively without `-t` or `-f`, the script waits for input and prints a prompt. Press `Ctrl+D` to signal end of input.
+- **Log messages:** All warnings go to stderr and do not affect `--plain` output.
+
+---
+
+## Running Tests
+
+```
+pip install pytest hazm
+python -m pytest test_persian_readability.py -v
+```
+
+76 tests covering: خواه classifier (all 9 document cases), punctuation filtering,
+syllable counting, heuristic limitations, formula verification, and edge cases.
 
 ---
 
