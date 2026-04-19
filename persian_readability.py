@@ -127,7 +127,29 @@ def count_syllables(word: str, pos_tag: str | None = None) -> int:
 
 
 # ── توکن‌ها ──────────────────────────────────────────────────────────────────
+def _strip_punctuation(token: str) -> str:
+    """
+    کاراکترهای غیرالفبایی را از ابتدا و انتهای توکن پاک می‌کند.
+
+    این تابع script-agnostic است: هر کاراکتری که isalpha() آن False باشد
+    (اعداد، نشانه‌گذاری فارسی/عربی/لاتین، گیومه، نقطه و ...) از لبه‌ها حذف می‌شود.
+    اعداد چسبیده به کلمه (مثل CO2) حفظ می‌شوند.
+
+    مثال:
+        «مثال»  →  مثال
+        (hello) →  hello
+        ...     →  ''
+    """
+    i, j = 0, len(token)
+    while i < j and not token[i].isalpha():
+        i += 1
+    while j > i and not token[j - 1].isalpha():
+        j -= 1
+    return token[i:j]
+
+
 def _is_word_token(token: str) -> bool:
+    """توکن باید حداقل یک حرف الفبایی (در هر زبانی) داشته باشد."""
     return any(ch.isalpha() for ch in token)
 
 
@@ -231,20 +253,34 @@ def _tag_sentence_parsivar(
     pv_tagger: "ParsivarPOSTagger",
 ) -> list[tuple[str, str | None]]:
     tokens = pv_tok.tokenize_words(sent)
-    word_tokens = [t for t in tokens if _is_word_token(t)]
+    # ابتدا توکن‌های غیرکلمه حذف، سپس علائم حاشیه‌ای پاک می‌شوند
+    word_tokens = [
+        cleaned
+        for t in tokens
+        if _is_word_token(t)
+        for cleaned in (_strip_punctuation(t),)
+        if cleaned
+    ]
     if not word_tokens:
         return []
     try:
         return pv_tagger.parse(word_tokens)
     except (RuntimeError, ValueError, IndexError) as exc:
-        # [پیشنهاد ۷] log به انگلیسی (پیام توسعه‌دهنده)
         logger.warning("Parsivar tagger failed for sentence, falling back to heuristic: %s", exc)
         return [(w, None) for w in word_tokens]
 
 
 def _tag_sentence_heuristic(sent: str) -> list[tuple[str, str | None]]:
     tokens = word_tokenize(sent)
-    return [(t, None) for t in tokens if _is_word_token(t)]
+    # ابتدا توکن‌های غیرکلمه حذف، سپس علائم حاشیه‌ای پاک می‌شوند
+    result = []
+    for t in tokens:
+        if not _is_word_token(t):
+            continue
+        cleaned = _strip_punctuation(t)
+        if cleaned:
+            result.append((cleaned, None))
+    return result
 
 
 def _extract_tagged_words(
@@ -300,7 +336,10 @@ def compute_flesch_dayani(text: str) -> ReadabilityResult:
     n_sentences = len(raw_sentences)
     n_words = len(tagged_words)
     if n_words == 0:
-        raise ValueError("متن هیچ کلمه‌ای (با حروف الفبایی) ندارد.")
+        raise ValueError(
+            "پس از پاک‌سازی علائم نشانه‌گذاری، هیچ کلمه‌ای در متن یافت نشد. "
+            "لطفاً متنی با محتوای الفبایی وارد کنید."
+        )
 
     all_words = [w for w, _ in tagged_words]
     n_letters = count_letters(all_words)
