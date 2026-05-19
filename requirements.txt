@@ -1,0 +1,7 @@
+hazm
+
+# Optional: install this for higher syllable-counting accuracy
+# parsivar
+
+# Development / testing
+pytest
