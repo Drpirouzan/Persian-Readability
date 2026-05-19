@@ -1,42 +1,28 @@
 [build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends.legacy:build"
 
 [project]
 name = "persian-readability"
-version = "0.1.0"
-description = "A lightweight Python tool for Persian/Farsi readability analysis using the Flesch-Dayani formula."
+version = "1.0.0"
+description = "Flesch–Dayani readability score for Persian text"
 readme = "README.md"
-requires-python = ">=3.10"
-license = "MIT"
-authors = [
-  { name = "Mohammad Pirouzan" }
-]
-keywords = [
-  "persian",
-  "farsi",
-  "readability",
-  "nlp",
-  "education",
-  "text-analysis"
-]
+license = { file = "LICENSE" }
+authors = [{ name = "Mohammad Pirouzan", email = "your@email.com" }]
+keywords = ["persian", "farsi", "readability", "nlp", "flesch"]
 classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
-  "Natural Language :: Persian",
-  "Topic :: Text Processing :: Linguistic"
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: Persian",
 ]
-dependencies = [
-  "hazm"
-]
+requires-python = ">=3.7"
+dependencies = ["hazm"]
 
 [project.optional-dependencies]
-pos = [
-  "parsivar"
-]
-dev = [
-  "pytest"
-]
+pos = ["parsivar"]
 
 [project.scripts]
-persian-readability = "persian_readability:main"
+persian-readability = "persian_readability.core:main"
+
+[project.urls]
+Homepage = "https://github.com/Drpirouzan/Persian-Readability"
