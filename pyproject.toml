@@ -1,28 +1,66 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.backends.legacy:build"
+requires = ["setuptools>=77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "persian-readability"
-version = "1.0.0"
-description = "Flesch–Dayani readability score for Persian text"
+version = "0.1.1"
+description = "A lightweight Python tool for Persian/Farsi readability analysis using the Flesch-Dayani formula."
 readme = "README.md"
-license = { file = "LICENSE" }
-authors = [{ name = "Mohammad Pirouzan", email = "your@email.com" }]
-keywords = ["persian", "farsi", "readability", "nlp", "flesch"]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Natural Language :: Persian",
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Mohammad Pirouzan", email = "mohammadpirouzan@gmail.com" }
 ]
-requires-python = ">=3.7"
-dependencies = ["hazm"]
+keywords = [
+  "persian",
+  "farsi",
+  "readability",
+  "nlp",
+  "flesch",
+  "flesch-dayani",
+  "text-analysis",
+  "persian-language",
+  "education",
+  "accessibility"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "Natural Language :: Persian",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Text Processing",
+  "Topic :: Text Processing :: Linguistic"
+]
+dependencies = [
+  "hazm"
+]
 
 [project.optional-dependencies]
-pos = ["parsivar"]
+pos = [
+  "parsivar"
+]
+dev = [
+  "pytest",
+  "build",
+  "twine"
+]
 
 [project.scripts]
 persian-readability = "persian_readability.core:main"
 
 [project.urls]
 Homepage = "https://github.com/Drpirouzan/Persian-Readability"
+Repository = "https://github.com/Drpirouzan/Persian-Readability"
+Issues = "https://github.com/Drpirouzan/Persian-Readability/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["persian_readability*"]
