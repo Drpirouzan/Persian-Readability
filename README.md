@@ -102,14 +102,49 @@ python persian_readability.py -f sample.txt --verbose
 
 ### Example 1 — Public health text
 
-Input:
+**Input:**
 
 ```bash
 python persian_readability.py -t "برای پیشگیری از پوسیدگی دندان، بهتر است روزی دو بار مسواک بزنید و مصرف مواد قندی را کاهش دهید."
+```
+
+**Possible use case:**
+
+This can help public health educators check whether patient-facing Persian health messages are simple enough for the general public.
+
+---
+
+### Example 2 — Academic text
+
+**Input:**
+
+```bash
+python persian_readability.py -t "شاخص‌های زیستی بزاقی می‌توانند در تشخیص زودهنگام برخی بیماری‌های دهان و فک و صورت نقش مهمی داشته باشند."
+```
+
+**Possible use case:**
+
+Researchers can compare the readability of Persian academic summaries, abstracts, or educational materials.
+
+---
+
+### Example 3 — Pipeline use
+
+**Input:**
+
+```bash
+cat article.txt | python persian_readability.py --plain
+```
+
+**Possible use case:**
+
+Developers can integrate the readability score into larger Persian NLP or content-quality workflows.
+
+---
 
 ## Sample Output
 
-```
+```text
 ══════════════════════════════════════════════════════
   Persian Readability — Flesch–Dayani
 ══════════════════════════════════════════════════════
