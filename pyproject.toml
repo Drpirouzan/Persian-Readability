@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "persian-readability"
+version = "0.1.0"
+description = "A lightweight Python tool for Persian/Farsi readability analysis using the Flesch-Dayani formula."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "Mohammad Pirouzan" }
+]
+keywords = [
+  "persian",
+  "farsi",
+  "readability",
+  "nlp",
+  "education",
+  "text-analysis"
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: Persian",
+  "Topic :: Text Processing :: Linguistic"
+]
+dependencies = [
+  "hazm"
+]
+
+[project.optional-dependencies]
+pos = [
+  "parsivar"
+]
+dev = [
+  "pytest"
+]
+
+[project.scripts]
+persian-readability = "persian_readability:main"
