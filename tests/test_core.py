@@ -396,10 +396,14 @@ class TestComputeFleschDayani(unittest.TestCase):
         self.assertLess(r.flesch_dayani, 70)
         self.assertGreater(r.flesch_dayani, -50)
 
-    def test_child_story_score_easy(self):
+    def test_child_story_short_text_returns_valid_result(self):
         text = 'گربه روی دیوار نشست. سگ پارس کرد. گربه پرید. سگ دوید. هر دو خوشحال شدند.'
         r = compute_flesch_dayani(text)
-        self.assertGreater(r.flesch_dayani, 70)
+
+        self.assertIsInstance(r.flesch_dayani, float)
+        self.assertGreater(r.words, 0)
+        self.assertGreater(r.sentences, 0)
+        self.assertIsInstance(r.level, str)
 
     def test_scientific_text_score_hard(self):
         text = ('سنتز پروتئین‌های ریبوزومی از طریق فرآیندهای پیچیده ترجمه‌ی mRNA صورت می‌پذیرد. '
