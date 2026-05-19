@@ -98,6 +98,15 @@ python persian_readability.py -f sample.txt --verbose
 
 ---
 
+## Real-World Examples
+
+### Example 1 — Public health text
+
+Input:
+
+```bash
+python persian_readability.py -t "برای پیشگیری از پوسیدگی دندان، بهتر است روزی دو بار مسواک بزنید و مصرف مواد قندی را کاهش دهید."
+
 ## Sample Output
 
 ```
