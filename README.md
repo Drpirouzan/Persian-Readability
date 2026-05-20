@@ -1,6 +1,6 @@
 # Persian Readability (Flesch–Dayani)
 
-A lightweight Python script to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text — with an optional POS-enhanced syllable counter for higher accuracy.
+A lightweight Python package and command-line tool to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text — with an optional POS-enhanced syllable counter for higher accuracy.
 
 ---
 
@@ -40,6 +40,28 @@ A lightweight Python script to calculate the **Flesch–Dayani readability score
 
 ---
 
+## Installation
+
+Install from PyPI after release:
+
+```bash
+pip install persian-readability
+```
+
+For local development:
+
+```bash
+pip install -e ".[dev]"
+```
+
+For optional POS-enhanced syllable counting:
+
+```bash
+pip install "persian-readability[pos]"
+```
+
+---
+
 ## Requirements
 
 ### Required
@@ -68,32 +90,43 @@ pip install parsivar
 **Direct text:**
 
 ```
-python persian_readability.py -t "متن فارسی شما"
+persian-readability -t "متن فارسی شما"
 ```
 
 **From a file:**
 
 ```
-python persian_readability.py -f sample.txt
+persian-readability -f sample.txt
 ```
 
 **From stdin (pipe):**
 
 ```
-echo "متن فارسی شما" | python persian_readability.py
-cat article.txt | python persian_readability.py
+echo "متن فارسی شما" | persian-readability
+cat article.txt | persian-readability
 ```
 
 **Raw score only (for scripting):**
 
 ```
-python persian_readability.py -f sample.txt --plain
+persian-readability -f sample.txt --plain
 ```
 
 **With debug logging:**
 
 ```
-python persian_readability.py -f sample.txt --verbose
+persian-readability -f sample.txt --verbose
+```
+
+---
+
+## Python API Usage
+
+```python
+from persian_readability import calculate_readability
+
+result = calculate_readability("برای پیشگیری از پوسیدگی دندان، روزی دو بار مسواک بزنید.")
+print(result)
 ```
 
 ---
@@ -105,7 +138,7 @@ python persian_readability.py -f sample.txt --verbose
 **Input:**
 
 ```bash
-python persian_readability.py -t "برای پیشگیری از پوسیدگی دندان، بهتر است روزی دو بار مسواک بزنید و مصرف مواد قندی را کاهش دهید."
+persian-readability -t "برای پیشگیری از پوسیدگی دندان، بهتر است روزی دو بار مسواک بزنید و مصرف مواد قندی را کاهش دهید."
 ```
 
 **Possible use case:**
@@ -119,7 +152,7 @@ This can help public health educators check whether patient-facing Persian healt
 **Input:**
 
 ```bash
-python persian_readability.py -t "شاخص‌های زیستی بزاقی می‌توانند در تشخیص زودهنگام برخی بیماری‌های دهان و فک و صورت نقش مهمی داشته باشند."
+persian-readability -t "شاخص‌های زیستی بزاقی می‌توانند در تشخیص زودهنگام برخی بیماری‌های دهان و فک و صورت نقش مهمی داشته باشند."
 ```
 
 **Possible use case:**
@@ -133,7 +166,7 @@ Researchers can compare the readability of Persian academic summaries, abstracts
 **Input:**
 
 ```bash
-cat article.txt | python persian_readability.py --plain
+cat article.txt | persian-readability --plain
 ```
 
 **Possible use case:**
@@ -218,7 +251,7 @@ The classifier uses exact lexical sets (layer 1), suffix-compound detection (lay
 
 ```
 pip install pytest hazm
-python -m pytest test_persian_readability.py -v
+python -m pytest tests/test_core.py -v
 ```
 
 76 tests covering: خواه classifier (all 9 document cases), punctuation filtering,
