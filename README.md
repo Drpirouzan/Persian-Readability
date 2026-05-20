@@ -1,5 +1,9 @@
 # Persian Readability (Flesch–Dayani)
 
+[![PyPI](https://img.shields.io/pypi/v/persian-readability)](https://pypi.org/project/persian-readability/)
+![Python](https://img.shields.io/pypi/pyversions/persian-readability)
+[![License](https://img.shields.io/github/license/Drpirouzan/Persian-Readability)](https://github.com/Drpirouzan/Persian-Readability/blob/main/LICENSE)
+
 A lightweight Python package and command-line tool to calculate the **Flesch–Dayani readability score** for Persian (Farsi) text — with an optional POS-enhanced syllable counter for higher accuracy.
 
 ---
