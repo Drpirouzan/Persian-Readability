@@ -258,7 +258,7 @@ pip install pytest hazm
 python -m pytest tests/test_core.py -v
 ```
 
-76 tests covering: خواه classifier (all 9 document cases), punctuation filtering,
+80 tests covering: خواه classifier (all 9 document cases), punctuation filtering,
 syllable counting, heuristic limitations, formula verification, and edge cases.
 
 ---
